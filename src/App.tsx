@@ -25,9 +25,14 @@ function App() {
   const [todos, setTodos] = useState<todoType[]>(() => {
     const saved = localStorage.getItem("todos");
     return saved ? JSON.parse(saved) : [];
-  });  const [filter, setFilter] = useState<string>('all')
+  });  
+  const [filter, setFilter] = useState<string>('all')
   const [filtered, setFiltered] = useState<todoType[]>([]);
   const itemsLeft = todos.filter(task => !task.completed)
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   useEffect(() => {
     if (filter === 'all') {
@@ -92,7 +97,7 @@ function clearCompleted(){
         } alt="" className='w-full'
       />
       <div className={`${isDark ? 'bg-[#181824]' : 'bg-[#fafafa]'} h-screen`}>
-        <div className='flex flex-col w-[90%] sm:max-w-2xl mx-auto -mt-[40%] sm:-mt-28 md:-mt-36 lg:-mt-44 mb-10'>
+        <div className='flex flex-col w-[85%] sm:max-w-2xl mx-auto -mt-[40%] sm:-mt-28 md:-mt-36 lg:-mt-44 mb-10'>
           <header className='flex justify-between items-center w-full'>
             <h1 className='text-white font-semibold text-2xl tracking-[8px]'>TODO</h1>
             <button className='cursor-pointer'onClick={handleThemeToggle}><img src={isDark ? sun : moon} alt="" className='size-6 hover:scale-110 transition duration-300'/></button>
@@ -130,7 +135,7 @@ function clearCompleted(){
                   >
                     {task.completed ? <img src={check} alt="" /> : ''}
                   </button>
-                  <p className='font-semibold grow cursor-pointer'>{task.name}</p>
+                  <p className={`${task.completed ? (isDark ? "line-through text-gray-600" : "line-through text-gray-400") : "" } font-semibold grow cursor-pointer`}>{task.name}</p>
                   <button 
                     className='cursor-pointer' 
                     onClick={() => removeTodo(task.id)}
